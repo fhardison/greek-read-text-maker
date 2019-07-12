@@ -79,52 +79,26 @@ for p in t.split("\n\n"):
     p = tokenize_with_accents(p)
     p = map(lambda x: strip_last_accent_if_two(x), p)
     p = lemmatizer.lemmatize(list(p))
-    print(list(p))
     p = check_unknown_lemmas_in_p(p, MANUAL_LEMMAS)
     paragraphs.append(p)
 
-#paragraphs = list(map(lambda x: map(lambda y: strip_last_accent_if_two(y), tokenize_with_accents(x)), paragraphs))
-#paragraphs  = list(map(lambda x: check_unknown_lemmas_in_p(lemmatizer.lemmatize(x), MANUAL_LEMMAS), paragraphs))
 
-#print(list(paragraphs))
-
-# tokens to set
-
-#tokenset = set([w.lower() for p in paragraphs for w in p])
-
-
-# load lemma dict
-
-#lemmas = read_tab_list("no-accents.tab")
 glosses = read_tab_list("gloss-no-acccents.tab")
-#glosses = read_tab_list("gloss-dict.tab")
+
 paras = []
 for p in paragraphs:
     pnew = []
     for w in p:
         try:
-            if w[1] in glosses:
-                pnew.append((w[0], w[1], glosses[w[1].lower()]))
+            lemma = re.sub(r'[0-9]','', w[1]).lower()
+            if lemma in glosses:
+                pnew.append((w[0], w[1], glosses[lemma]))
             else:
                 print(w[0] + " : " + w[1]) 
                 pnew.append((w[0], w[1], "?" ))
         except:
             print(w)
     paras.append(pnew)
-
-#glosses = {}
-
-#for k,v in glss.items():
-#    glosses[remover.transformWord(k)] = v    
-
-
-# check for unkniwn words
-from unknown_words_checker import find_unknown
-
-#removeNums = lambda z: not(all(x in "1234567890" for x in z))
-        
-
-#unknowns = list(filter(removeNums, find_unknown(lemmas, tokenset)))
 
 
 # get lemmas for unknown words
@@ -139,54 +113,7 @@ from unknown_words_checker import find_unknown
 #        results[remover.transformWord(k)] = ",".join(v)
 #    lemmas.update(results)
 
-# get lemmas
-#tlemmas = {}
 
-        
-        
-            
-
-#for token in tokenset:
-#    t = remover.transformWord(token)
-#    if t in lemmas:
-#        tlemmas[token] = collapse_lemmas(lemmas[t])
-#    else:
-#        tlemmas[token] = ["?"]
-# get glosses for lemmas
-
-
-#tglosses = {}
-
-
-#for k,ls in tlemmas.items():
-#    l = remover.transformWord(lemma)
-#    gls_for_lemma = []
-#    for l in ls:
-#        if l in glosses:
-#            gls_for_lemma.append(l + ": " + glosses[l])
-#        else:
-#            gls_for_lemma.append(l + ": ?")
-#    
-#    if k in tglosses:
-#        tglosses[k] = list(set(tglosses[k] + gls_for_lemma))
-#    else: 
-#        tglosses[k] = gls_for_lemma
-
-# attach lemma and gloss to markuo for text.
-# Figure out how to loop through lemmas and glosses for each one and attache to 
-#def buildTextTupsForP(p, gl, tl):
-#    out = []
-#    print(tl)
-#    for w in p:
-#        lemma = tl[w.lower()]
-#        print(lemma)
-#        glosses = gl[w.lower()]
-#        out.append((w, lemma, glosses))
-#    return out
-    
-#textTups = map(lambda x: buildTextTupsForP(x, tglosses, tlemmas), paragraphs)
-
-# <w lemma="" gloss="">WORD</w> with <p></p>
 import xml.etree.ElementTree as ET 
 
 text = ET.Element("text")
