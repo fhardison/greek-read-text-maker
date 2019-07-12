@@ -1,6 +1,10 @@
 import re
 from remove_accents import Remover 
 remover = Remover()
+from greek_normalisation.normalise import Normaliser
+
+normer = Normaliser().normalise
+
 
 PUNCTREGEX1 = r'\b([;,.?\'"·])'
 REP1 = r' \1'
@@ -21,6 +25,6 @@ def tokenize_with_accents(text):
     x = re.sub(PUNCTREGEX2, REP2, re.sub(PUNCTREGEX1, REP1, text.replace("\n", " \n ")))
     xs = x.split(' ')
     #remove empty elements
-    return list(filter(lambda x: x, filter(lambda y: not(y in ";,.?\'\"·\n"),xs)))
+    return list(map(lambda z: normer(z)[0], filter(lambda x: x, filter(lambda y: not(y in ";,.?\'\"·\n"),xs))))
 
 

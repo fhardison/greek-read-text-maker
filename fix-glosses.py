@@ -28,7 +28,7 @@ noaccents =[]
 
 for l in lemmas:
     if len(l) > 1:
-        noaccents.append([remover.transformWord(l[0]).replace(":", "").replace("-",""),l[1]])
+        noaccents.append([l[0].replace(":", "").replace("-",""),l[1]])
 
 
 
@@ -48,9 +48,9 @@ def nuke_empty(gl):
 
 for n in noaccents:
     if n[0] in out:
-        out[n[0]] = out[n[0]] + n[1]
+        out[n[0]] = out[n[0]] + nuke_empty(n[1])
     else:
-        out[n[0]] = n[1]
+        out[n[0]] = nuke_empty(n[1])
 
 
 
